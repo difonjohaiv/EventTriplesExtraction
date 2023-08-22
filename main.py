@@ -1,4 +1,5 @@
-from triple_extraction import TripleExtractor
+# from triple_extraction import TripleExtractor
+from baidu_svo_extract import SVOParser
 from zhon.hanzi import punctuation
 import string
 import pandas as pd
@@ -28,14 +29,16 @@ def  event_filter(x_list):
 def start_extracting(x, extractor):
     with torch.no_grad():
         print(f"正在處理第_{x}_個文件ing")
-        fn = f"dataset/02/news_train_2_{x}.csv"
+        fn = f"dataset/news_train_{x}_entity_keyword.csv"
         df = pd.read_csv(fn)
         df['event'] = None
         df['signal'] = None
-        save = f"dataset/02/news_train_2_{x}_entity_keyword_event.csv"
+        save = f"dataset/news_train_{x}_entity_keyword_event.csv"
         for item in tqdm(range(len(df))):
             svos = extractor.triples_main(df['content'][item])
             svos = event_filter(svos)
+            x = set(svos)
+            svos = list(x)
             # 處理玩之後呢，事件已經由三元組變成sentence，sentence組成的列表
             if len(svos) < 10:  # 事件數量不夠10，就丟掉
                 df['signal'][item] == 0
@@ -48,8 +51,9 @@ def start_extracting(x, extractor):
 
 if __name__ == '__main__':
     with torch.no_grad():
-        extractor = TripleExtractor()
-        index_list = [1]
+        # extractor = TripleExtractor()
+        extractor = SVOParser()
+        index_list = [1, 2, 3, 4, 5, 6, 7]
         for item in index_list:
             start_extracting(x=item, extractor=extractor)
         # start_extracting(extractor=extractor)

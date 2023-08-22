@@ -4,7 +4,8 @@
 # Author: lhy<lhy_in_blcu@126.com,https://huangyong.github.io>
 # Date: 18-3-10
 
-import os, re
+import os
+import re
 from ddparser import DDParser
 
 class SVOParser:
@@ -179,7 +180,7 @@ class SVOParser:
         sentences = self.split_sents(content)
         svos = []
         for sentence in sentences:
-            print(sentence)
+            # print(sentence)
             words, postags, child_dict_list, arcs = self.parser_main(sentence)
             svo = self.ruler2(words, postags, child_dict_list, arcs)
             svos += svo
@@ -207,7 +208,9 @@ def test():
     当天，数千名巴勒斯坦人在加沙地带边境地区继续“回归大游行”抗议活动。部分示威者燃烧轮胎，并向以军投掷石块、燃烧瓶等，驻守边境的以军士兵向示威人群发射催泪瓦斯并开枪射击。'''
     extractor = SVOParser()
     svos = extractor.triples_main(content2)
-    print('svos', svos)
+    x = set(svos)
+    svos = list(x)
+    # print('svos', svos)
     for svo in svos:
         print(svo)
 
