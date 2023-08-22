@@ -25,23 +25,23 @@ def  event_filter(x_list):
         return y_list
 
 
-def start_extracting(i, extractor):
+def start_extracting(x, extractor):
     with torch.no_grad():
-        print(f"正在處理第_{i}_個文件ing")
-        fn = f"dataset/news_train_{i}_entity_keyword.csv"
+        print(f"正在處理第_{x}_個文件ing")
+        fn = f"dataset/02/news_train_2_{x}.csv"
         df = pd.read_csv(fn)
         df['event'] = None
         df['signal'] = None
-        save = f"dataset/news_train_{i}_entity_keyword_event.csv"
-        for i in tqdm(range(len(df))):
-            svos = extractor.triples_main(df['content'][i])
+        save = f"dataset/02/news_train_2_{x}_entity_keyword_event.csv"
+        for item in tqdm(range(len(df))):
+            svos = extractor.triples_main(df['content'][item])
             svos = event_filter(svos)
             # 處理玩之後呢，事件已經由三元組變成sentence，sentence組成的列表
             if len(svos) < 10:  # 事件數量不夠10，就丟掉
-                df['signal'][i] == 0
+                df['signal'][item] == 0
                 continue
             e_list = "@".join(svos)  # 這裏是把所有的事件變成str存儲
-            df['event'][i] = e_list
+            df['event'][item] = e_list
             df['signal'] == 1
         df.to_csv(save, index=False)
 
@@ -49,6 +49,7 @@ def start_extracting(i, extractor):
 if __name__ == '__main__':
     with torch.no_grad():
         extractor = TripleExtractor()
-        index_list = [3]
+        index_list = [1]
         for item in index_list:
-            start_extracting(i=item, extractor=extractor)
+            start_extracting(x=item, extractor=extractor)
+        # start_extracting(extractor=extractor)
